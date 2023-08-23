@@ -47,6 +47,7 @@ namespace HideAndSeekPlugin {
                     seeker = hiders[UnityEngine.Random.Range(0, hiders.Count)];
                     hiders.Remove(seeker);
                     Log.Info(NAME, $"{seeker.name} is the seeker!")
+                    ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_newseeker", $"{seeker.name} is the new seeker", Color.yellow, Vector3.forward * 2, true, true, 10));
                 } else if (hiders.Contains(client)) {
                     hiders.Remove(client);
                 }
