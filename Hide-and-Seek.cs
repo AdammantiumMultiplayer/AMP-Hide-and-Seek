@@ -26,13 +26,13 @@ namespace HideAndSeekPlugin {
                 hiders.Add(client);
                 Log.Info(NAME, $"{client.name} joined the game as a hider.");
             } else {
-                // dunno what to put here so have a cookie
+                // you read this have a cookie 
             }
         }
 
         public override void OnPlayerDamaged(ClientInformation player, float damage, ClientInformation damager) {
             if (gameRunning && hiders.Contains(player)) {
-                // Player was caught
+                // Player was damaged by another player, so they are caught.
                 hiders.Remove(player);
                 Log.Info(NAME, $"{player.name} was caught by {damager.name}!");
             }
@@ -41,7 +41,13 @@ namespace HideAndSeekPlugin {
         public override void OnPlayerQuit(ClientInformation client) {
             if (gameRunning) {
                 if (client == seeker) {
-                    // Handle the case where the seeker quits during the game.
+                    // Handle the case where the seeker quits during the game.!
+                    // You might want to choose a new seeker here.
+                    ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_seekerleft", "Seeker left choosing a new one", Color.yellow, Vector3.forward * 2, true, true, 10));
+                                    // Choose a random seeker from the hiders.
+                    seeker = hiders[UnityEngine.Random.Range(0, hiders.Count)];
+                    hiders.Remove(seeker);
+                    Log.Info(NAME, $"{seeker.name} is the seeker!")
                 } else if (hiders.Contains(client)) {
                     hiders.Remove(client);
                 }
@@ -58,7 +64,7 @@ namespace HideAndSeekPlugin {
 
                 Log.Info(NAME, $"{seeker.name} is the seeker!");
 
-                // Notify about the game starting.
+                // Notify players about the game starting.
                 ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_start", "Hide and Seek game started!", Color.yellow, Vector3.forward * 2, true, true, 10));
             } else {
                 Log.Info(NAME, "Not enough players to start the game.");
