@@ -63,6 +63,7 @@ namespace HideAndSeekPlugin {
                 hiders.Remove(seeker);
 
                 Log.Info(NAME, $"{seeker.name} is the seeker!");
+                ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_seekerleft", $"{seeker.name} Is the seeker Go hide", Color.yellow, Vector3.forward * 2, true, true, 10));
 
                 // Notify players about the game starting.
                 ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_start", "Hide and Seek game started!", Color.yellow, Vector3.forward * 2, true, true, 10));
