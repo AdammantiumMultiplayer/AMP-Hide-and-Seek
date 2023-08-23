@@ -55,7 +55,7 @@ namespace HideAndSeekPlugin {
         }
 
         public void StartGame() {
-            if (hiders.Count >= 4) {
+            if (hiders.Count >= 6) {
                 gameRunning = true;
 
                 // Choose a random seeker from the hiders.
