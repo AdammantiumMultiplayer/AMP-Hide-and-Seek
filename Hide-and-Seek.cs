@@ -26,13 +26,13 @@ namespace HideAndSeekPlugin {
                 hiders.Add(client);
                 Log.Info(NAME, $"{client.name} joined the game as a hider.");
             } else {
-                // You can handle joining during an ongoing game differently if needed.
+                // dunno what to put here so have a cookie
             }
         }
 
         public override void OnPlayerDamaged(ClientInformation player, float damage, ClientInformation damager) {
             if (gameRunning && hiders.Contains(player)) {
-                // Player was damaged by another player, so they are caught.
+                // Player was caught
                 hiders.Remove(player);
                 Log.Info(NAME, $"{player.name} was caught by {damager.name}!");
             }
@@ -42,7 +42,6 @@ namespace HideAndSeekPlugin {
             if (gameRunning) {
                 if (client == seeker) {
                     // Handle the case where the seeker quits during the game.
-                    // You might want to choose a new seeker here.
                 } else if (hiders.Contains(client)) {
                     hiders.Remove(client);
                 }
@@ -59,7 +58,7 @@ namespace HideAndSeekPlugin {
 
                 Log.Info(NAME, $"{seeker.name} is the seeker!");
 
-                // Notify players about the game starting.
+                // Notify about the game starting.
                 ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_start", "Hide and Seek game started!", Color.yellow, Vector3.forward * 2, true, true, 10));
             } else {
                 Log.Info(NAME, "Not enough players to start the game.");
