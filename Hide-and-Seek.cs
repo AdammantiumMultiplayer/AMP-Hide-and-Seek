@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace HideAndSeekPlugin {
     public class HideAndSeek : AMP_Plugin {
         public override string NAME    { get { return "HideAndSeek"; } }
-        public override string VERSION { get { return "0.0.1"; } }
+        public override string VERSION { get { return "0.0.2"; } }
         public override string AUTHOR  { get { return "flexhd""; } }
 
         private bool gameRunning = false;
