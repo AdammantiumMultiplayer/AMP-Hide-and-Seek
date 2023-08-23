@@ -42,9 +42,8 @@ namespace HideAndSeekPlugin {
             if (gameRunning) {
                 if (client == seeker) {
                     // Handle the case where the seeker quits during the game.!
-                    // You might want to choose a new seeker here.
                     ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_seekerleft", "Seeker left choosing a new one", Color.yellow, Vector3.forward * 2, true, true, 10));
-                                    // Choose a random seeker from the hiders.
+                    // Choose a random seeker from the hiders.
                     seeker = hiders[UnityEngine.Random.Range(0, hiders.Count)];
                     hiders.Remove(seeker);
                     Log.Info(NAME, $"{seeker.name} is the seeker!")
