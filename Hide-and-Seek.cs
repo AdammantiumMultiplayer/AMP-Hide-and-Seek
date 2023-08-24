@@ -17,6 +17,7 @@ namespace HideAndSeekPlugin {
         private List<ClientData> hiders = new List<ClientData>();
         private ClientData seeker = null;
         private float hideTime = 30.0f; // Hide time in seconds
+        private static int REQUIRED_PLAYER_COUNT = 4;
         private IEnumerator HideTimeCountdown()
         {
             float countdown = 30.0f; // Countdown time in seconds
@@ -45,7 +46,11 @@ namespace HideAndSeekPlugin {
                 hiders.Add(client);
                 Log.Info(NAME, $"{client.name} joined the game as a hider.");
             } else {
-                // you read this have a cookie 
+                message = $"<color=#FFDC00>{client.name} joined the Hide and seek match!\n{REQUIRED_PLAYER_COUNT - ModManager.serverInstance.connectedClients} still required to start.</color>";
+                ModManager.serverInstance.SendReliableToAll(
+                new DisplayTextPacket("welcome", message, Color.yellow, Vector3.forward * 2, true, true, 10)
+            );
+ 
             }
         }
 
@@ -75,7 +80,7 @@ namespace HideAndSeekPlugin {
         }
 
         public void StartGame() {
-            if (hiders.Count >= 6) {
+            if (hiders.Count >= REQUIRED_PLAYER_COUNT) {
                 gameRunning = true;
 
                 // Choose a random seeker from the hiders.
