@@ -17,7 +17,7 @@ namespace HideAndSeekPlugin {
         private List<ClientData> hiders = new List<ClientData>();
         private ClientData seeker = null;
         private float hideTime = 30.0f; // Hide time in seconds
-        private static int REQUIRED_PLAYER_COUNT = 4;
+        private static int REQUIRED_PLAYER_COUNT = 6;
         private IEnumerator HideTimeCountdown()
         {
             float countdown = 30.0f; // Countdown time in seconds
