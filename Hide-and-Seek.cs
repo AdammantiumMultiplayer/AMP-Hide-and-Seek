@@ -19,7 +19,7 @@ namespace HideAndSeekPlugin {
         private float hideTime = 30.0f; // Hide time in seconds
         private IEnumerator HideTimeCountdown()
         {
-            float countdown = 10.0f; // Countdown time in seconds
+            float countdown = 30.0f; // Countdown time in seconds
 
             while (countdown > 0)
             {
