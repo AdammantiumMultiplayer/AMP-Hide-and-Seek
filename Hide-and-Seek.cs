@@ -54,6 +54,7 @@ namespace HideAndSeekPlugin {
                 // Player was damaged by another player, so they are caught.
                 hiders.Remove(player);
                 Log.Info(NAME, $"{player.name} was caught by {damager.name}!");
+                ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_playercaught", $"{player.name} was caught by {damager.name}!"))
             }
         }
 
