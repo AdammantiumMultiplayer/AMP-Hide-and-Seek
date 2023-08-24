@@ -16,6 +16,15 @@ namespace HideAndSeekPlugin {
         private bool gameRunning = false;
         private List<ClientData> hiders = new List<ClientData>();
         private ClientData seeker = null;
+        private float hideTime = 30.0f; // Hide time in seconds
+        private IEnumerator HideTimeCountdown() {
+            yield return new WaitForSeconds(hideTime);
+
+            // Notify players about the game starting.
+            ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_start", "Hide time is over Hide and Seek game started!", Color.yellow, Vector3.forward * 2, true, true, 10));
+        }
+
+
 
         public override void OnStart() {
             Log.Info(NAME, "Hide and Seek plugin started.");
@@ -63,10 +72,11 @@ namespace HideAndSeekPlugin {
                 hiders.Remove(seeker);
 
                 Log.Info(NAME, $"{seeker.name} is the seeker!");
-                ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_seekerchoosen", $"{seeker.name} Is the seeker Go hide", Color.yellow, Vector3.forward * 2, true, true, 10));
+                ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_seekerchoosen", $"{seeker.name} Is the seeker. Hide now!", Color.yellow, Vector3.forward * 2, true, true, 10));
 
-                // Notify players about the game starting.
-                ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_start", "Hide and Seek game started!", Color.yellow, Vector3.forward * 2, true, true, 10));
+                // Start the hide time countdown
+                StartCoroutine(HideTimeCountdown());
+
             } else {
                 Log.Info(NAME, "Not enough players to start the game.");
             }
