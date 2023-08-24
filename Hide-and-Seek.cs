@@ -17,12 +17,22 @@ namespace HideAndSeekPlugin {
         private List<ClientData> hiders = new List<ClientData>();
         private ClientData seeker = null;
         private float hideTime = 30.0f; // Hide time in seconds
-        private IEnumerator HideTimeCountdown() {
-            yield return new WaitForSeconds(hideTime);
+        private IEnumerator HideTimeCountdown()
+        {
+            float countdown = 10.0f; // Countdown time in seconds
 
-            // Notify players about the game starting.
-            ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_start", "Hide time is over Hide and Seek game started!", Color.yellow, Vector3.forward * 2, true, true, 10));
+            while (countdown > 0)
+            {
+                yield return new WaitForSeconds(1.0f); // Wait for 1 second
+                countdown--;
+                Log.Info(NAME, $"Countdown: {countdown} seconds");
+                ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_countdown", $"Hide and Seek game starts in {countdown}!", Color.yellow, Vector3.forward * 2, true, true, 10));
+            }
+
+            // Notify players that the game has started
+            ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_start", "Hide and Seek game started!", Color.yellow, Vector3.forward * 2, true, true, 10));
         }
+
 
 
 
