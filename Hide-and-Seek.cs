@@ -49,6 +49,9 @@ namespace HideAndSeekPlugin {
                 message = $"<color=#FFDC00>{client.name} joined the Hide and seek match!\n{REQUIRED_PLAYER_COUNT - ModManager.serverInstance.connectedClients} still required to start.</color>";
                 ModManager.serverInstance.SendReliableToAll(
                 new DisplayTextPacket("welcome", message, Color.yellow, Vector3.forward * 2, true, true, 10)
+
+            } else if (ModManager.serverInstance.connectedClients >= REQUIRED_PLAYER_COUNT) {
+                StartGame()
             );
  
             }
