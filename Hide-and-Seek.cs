@@ -27,12 +27,17 @@ namespace HideAndSeekPlugin {
                 yield return new WaitForSeconds(1.0f); // Wait for 1 second
                 countdown--;
                 Log.Info(NAME, $"Countdown: {countdown} seconds");
-                ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_countdown", $"Hide time ends in {countdown}!", Color.yellow, Vector3.forward * 2, true, true, 10));
+                ModManager.serverInstance.netamiteServer.SendToAll(
+                new DisplayTextPacket("game_countdown", String.Join($"Hide time ends in {countdown}!", args), Color.yellow, Vector3.forward * 2, true, true, 20)
+            );
             }
 
             // Notify players that the game has started
-            ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_start", "Hide and Seek game started!", Color.yellow, Vector3.forward * 2, true, true, 10));
+            ModManager.serverInstance.netamiteServer.SendToAll(
+                new DisplayTextPacket("say", String.Join("Hide and Seek game started!", args), Color.yellow, Vector3.forward * 2, true, true, 20)
+            );
         }
+
 
 
 
