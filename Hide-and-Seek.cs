@@ -47,7 +47,7 @@ namespace HideAndSeekPlugin {
             Log.Info(NAME, "Hide and Seek plugin started.");
         }
 
-        public override void OnPlayerJoin(ClientInformation client) {
+        public override void OnPlayerJoin(ClientData client) {
             if (!gameRunning) {
                 //hiders.Add(client);
                 players.Add(client);
@@ -66,7 +66,7 @@ namespace HideAndSeekPlugin {
             }
         }
 
-        public override void OnPlayerDamaged(ClientInformation player, float damage, ClientInformation damager) {
+        public override void OnPlayerDamaged(ClientData player, float damage, ClientInformation damager) {
             if (gameRunning && hiders.Contains(player)) {
                 // Player was damaged by another player, so they are caught.
                 hiders.Remove(player);
@@ -84,7 +84,7 @@ namespace HideAndSeekPlugin {
             }
         }
 
-        public override void OnPlayerQuit(ClientInformation client) {
+        public override void OnPlayerQuit(ClientData client) {
             if (gameRunning) {
                 if (client == seeker) {
                     // Handle the case where the seeker quits during the game.!
