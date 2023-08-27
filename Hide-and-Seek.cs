@@ -15,6 +15,7 @@ namespace HideAndSeekPlugin {
 
         private bool gameRunning = false;
         private List<ClientData> hiders = new List<ClientData>();
+        private List<ClientData> players = new List<ClientData>();
         private ClientData seeker = null;
         private float hideTime = 30.0f; // Hide time in seconds
         private static int REQUIRED_PLAYER_COUNT = 6;
@@ -49,12 +50,14 @@ namespace HideAndSeekPlugin {
         public override void OnPlayerJoin(ClientInformation client) {
             if (!gameRunning) {
                 hiders.Add(client);
+                players.Add(client);
                 Log.Info(NAME, $"{client.name} joined the game as a hider.");
             } else {
                 message = $"<color=#FFDC00>{client.name} joined the Hide and seek match!\n{REQUIRED_PLAYER_COUNT - ModManager.serverInstance.connectedClients} still required to start.</color>";
                 ModManager.serverInstance.netamiteServer.SendToAll(
                 new DisplayTextPacket("say", String.Join(message, args), Color.yellow, Vector3.forward * 2, true, true, 20)
-            );
+                );
+                players.Add(client);
 
             } else if (ModManager.serverInstance.connectedClients >= REQUIRED_PLAYER_COUNT) {
                 StartGame()
@@ -71,6 +74,13 @@ namespace HideAndSeekPlugin {
                 ModManager.serverInstance.netamiteServer.SendToAll(
                 new DisplayTextPacket("say", String.Join($"{player.name} was caught by {damager.name}!", args), Color.yellow, Vector3.forward * 2, true, true, 20)
                 )
+
+            if (hiders.Count = 0) {
+                ModManager.serverInstance.netamiteServer.SendToAll(
+                new DisplayTextPacket("say", String.Join("all players where caught ending game", args), Color.yellow, Vector3.forward * 2, true, true, 20)
+                )
+                EndGame()
+
             }
         }
 
@@ -78,6 +88,7 @@ namespace HideAndSeekPlugin {
             if (gameRunning) {
                 if (client == seeker) {
                     // Handle the case where the seeker quits during the game.!
+                    players.Remove(client);
                     ModManager.serverInstance.netamiteServer.SendToAll(
                     new DisplayTextPacket("say", String.Join("Seeker left choosing a new one", args), Color.yellow, Vector3.forward * 2, true, true, 20)
                     );
@@ -90,6 +101,7 @@ namespace HideAndSeekPlugin {
                     );
                 } else if (hiders.Contains(client)) {
                     hiders.Remove(client);
+                    players.Remove(client);
                 }
             }
         }
