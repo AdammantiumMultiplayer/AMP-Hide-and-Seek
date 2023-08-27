@@ -52,8 +52,9 @@ namespace HideAndSeekPlugin {
                 Log.Info(NAME, $"{client.name} joined the game as a hider.");
             } else {
                 message = $"<color=#FFDC00>{client.name} joined the Hide and seek match!\n{REQUIRED_PLAYER_COUNT - ModManager.serverInstance.connectedClients} still required to start.</color>";
-                ModManager.serverInstance.SendReliableToAll(
-                new DisplayTextPacket("welcome", message, Color.yellow, Vector3.forward * 2, true, true, 10)
+                ModManager.serverInstance.netamiteServer.SendToAll(
+                new DisplayTextPacket("say", String.Join(message, args), Color.yellow, Vector3.forward * 2, true, true, 20)
+            );
 
             } else if (ModManager.serverInstance.connectedClients >= REQUIRED_PLAYER_COUNT) {
                 StartGame()
@@ -67,7 +68,9 @@ namespace HideAndSeekPlugin {
                 // Player was damaged by another player, so they are caught.
                 hiders.Remove(player);
                 Log.Info(NAME, $"{player.name} was caught by {damager.name}!");
-                ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_playercaught", $"{player.name} was caught by {damager.name}!"))
+                ModManager.serverInstance.netamiteServer.SendToAll(
+                new DisplayTextPacket("say", String.Join($"{player.name} was caught by {damager.name}!", args), Color.yellow, Vector3.forward * 2, true, true, 20)
+                )
             }
         }
 
@@ -75,12 +78,16 @@ namespace HideAndSeekPlugin {
             if (gameRunning) {
                 if (client == seeker) {
                     // Handle the case where the seeker quits during the game.!
-                    ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_seekerleft", "Seeker left choosing a new one", Color.yellow, Vector3.forward * 2, true, true, 10));
+                    ModManager.serverInstance.netamiteServer.SendToAll(
+                    new DisplayTextPacket("say", String.Join("Seeker left choosing a new one", args), Color.yellow, Vector3.forward * 2, true, true, 20)
+                    );
                     // Choose a random seeker from the hiders.
                     seeker = hiders[UnityEngine.Random.Range(0, hiders.Count)];
                     hiders.Remove(seeker);
                     Log.Info(NAME, $"{seeker.name} is the seeker!")
-                    ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_newseeker", $"{seeker.name} is the new seeker", Color.yellow, Vector3.forward * 2, true, true, 10));
+                    ModManager.serverInstance.netamiteServer.SendToAll(
+                    new DisplayTextPacket("say", String.Join($"{seeker.name} is the new seeker", args), Color.yellow, Vector3.forward * 2, true, true, 20)
+                    );
                 } else if (hiders.Contains(client)) {
                     hiders.Remove(client);
                 }
@@ -96,8 +103,10 @@ namespace HideAndSeekPlugin {
                 hiders.Remove(seeker);
 
                 Log.Info(NAME, $"{seeker.name} is the seeker!");
-                ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_seekerchoosen", $"{seeker.name} Is the seeker. Hide now!", Color.yellow, Vector3.forward * 2, true, true, 10));
-
+                //ModManager.serverInstance.SendReliableToAll(new DisplayTextPacket("game_seekerchoosen", $"{seeker.name} Is the seeker. Hide now!", Color.yellow, Vector3.forward * 2, true, true, 10));
+                ModManager.serverInstance.netamiteServer.SendToAll(
+                new DisplayTextPacket("say", String.Join($"{seeker.name} Is the seeker. Hide now!", args), Color.yellow, Vector3.forward * 2, true, true, 20)
+                );
                 // Start the hide time countdown
                 StartCoroutine(HideTimeCountdown());
 
@@ -111,6 +120,9 @@ namespace HideAndSeekPlugin {
             seeker = null;
             hiders.Clear();
             Log.Info(NAME, "Hide and Seek game ended.");
+            ModManager.serverInstance.netamiteServer.SendToAll(
+            new DisplayTextPacket("say", String.Join("Hide and seek game ended", args), Color.yellow, Vector3.forward * 2, true, true, 20)
+            );
         }
     }
 }
