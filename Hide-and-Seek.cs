@@ -15,7 +15,7 @@ namespace HideAndSeekPlugin {
 
         private bool gameRunning = false;
         private List<ClientData> hiders = new List<ClientData>();
-        private List<ClientData> players = new List<ClientData>();
+        private List<ClientId> players = new List<ClientId>();
         private ClientData seeker = null;
         private float hideTime = 30.0f; // Hide time in seconds
         private static int REQUIRED_PLAYER_COUNT = 6;
@@ -49,7 +49,7 @@ namespace HideAndSeekPlugin {
 
         public override void OnPlayerJoin(ClientInformation client) {
             if (!gameRunning) {
-                hiders.Add(client);
+                //hiders.Add(client);
                 players.Add(client);
                 Log.Info(NAME, $"{client.name} joined the game as a hider.");
             } else {
@@ -107,8 +107,10 @@ namespace HideAndSeekPlugin {
         }
 
         public void StartGame() {
-            if (hiders.Count >= REQUIRED_PLAYER_COUNT) {
                 gameRunning = true;
+                foreach (var ClientId in players){
+                        hiders.add(ClientId);
+                }
 
                 // Choose a random seeker from the hiders.
                 seeker = hiders[UnityEngine.Random.Range(0, hiders.Count)];
@@ -121,9 +123,11 @@ namespace HideAndSeekPlugin {
                 );
                 // Start the hide time countdown
                 StartCoroutine(HideTimeCountdown());
+                foreach (var ClientId in players){
+                        hiders.add(ClientId);
+                }
 
-            } else {
-                Log.Info(NAME, "Not enough players to start the game.");
+            
             }
         }
 
