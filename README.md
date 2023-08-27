@@ -2,10 +2,10 @@
 
 
 # Description 
-The Hide and Seek Plugin is a game plugin designed for the Adammantium Multiplayer Mod server. It allows players to play the classic game of hide and seek within the Adammantium Mod multiplayer environment.
+The Hide and Seek Plugin is a game plugin designed for the Adammantium Multiplayer Mod server. It allows players to play the classic game of hide and seek within the Adammantium multiplayer Mod.
 
 # Installation 
-1. Place the `HideAndSeek.cs` file in the `Plugins` directory of your Adammantium Multiplayer Mod server.
+1. Place the `HideAndSeek.cs` file in the `Plugins` folder of your Adammantium Multiplayer Mod server.
 2. Restart the server to load the plugin.
  
 # Usage 
