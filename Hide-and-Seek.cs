@@ -15,7 +15,7 @@ namespace HideAndSeekPlugin {
 
         private bool gameRunning = false;
         private List<ClientData> hiders = new List<ClientData>();
-        private List<ClientId> players = new List<ClientId>();
+        private List<ClientData> players = new List<ClientData>();
         private ClientData seeker = null;
         private float hideTime = 30.0f; // Hide time in seconds
         private static int REQUIRED_PLAYER_COUNT = 6;
@@ -123,9 +123,6 @@ namespace HideAndSeekPlugin {
                 );
                 // Start the hide time countdown
                 StartCoroutine(HideTimeCountdown());
-                foreach (var ClientId in players){
-                        hiders.add(ClientId);
-                }
 
             
             }
