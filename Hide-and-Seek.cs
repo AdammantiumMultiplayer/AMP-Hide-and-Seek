@@ -18,7 +18,6 @@ namespace HideAndSeekPlugin {
         private List<ClientData> players = new List<ClientData>();
         private ClientData seeker = null;
         private float hideTime = 30.0f; // Hide time in seconds
-        private static int REQUIRED_PLAYER_COUNT = 6;
         private IEnumerator HideTimeCountdown()
         {
             float countdown = 30.0f; // Countdown time in seconds
@@ -40,11 +39,16 @@ namespace HideAndSeekPlugin {
         }
 
 
-
+       
+        internal class HideAndSeekConfig : PluginConfig {
+        public int REQUIRED_PLAYER_COUNT = 6;
+        public float hideTime = 30.0f;
+        }
 
 
         public override void OnStart() {
             Log.Info(NAME, "Hide and Seek plugin started.");
+            HideAndSeekConfig config = (HideAndSeekConfig) GetConfig();
         }
 
         public override void OnPlayerJoin(ClientData client) {
@@ -74,6 +78,7 @@ namespace HideAndSeekPlugin {
                 ModManager.serverInstance.netamiteServer.SendToAll(
                 new DisplayTextPacket("say", String.Join($"{player.name} was caught by {damager.name}!", args), Color.yellow, Vector3.forward * 2, true, true, 20)
                 )
+
 
             if (hiders.Count = 0) {
                 ModManager.serverInstance.netamiteServer.SendToAll(
