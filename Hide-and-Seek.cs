@@ -11,13 +11,14 @@ namespace HideAndSeekPlugin {
     public class HideAndSeek : AMP_Plugin {
         public override string NAME    { get { return "HideAndSeek"; } }
         public override string VERSION { get { return "0.0.1"; } }
-        public override string AUTHOR  { get { return "flexhd""; } }
+        public override string AUTHOR  { get { return "flexhd"; } }
 
         private bool gameRunning = false;
         private List<ClientData> hiders = new List<ClientData>();
         private List<ClientData> players = new List<ClientData>();
         private ClientData seeker = null;
         private float hideTime = 30.0f; // Hide time in seconds
+
         private IEnumerator HideTimeCountdown()
         {
             float countdown = 30.0f; // Countdown time in seconds
@@ -28,23 +29,20 @@ namespace HideAndSeekPlugin {
                 countdown--;
                 Log.Info(NAME, $"Countdown: {countdown} seconds");
                 ModManager.serverInstance.netamiteServer.SendToAll(
-                new DisplayTextPacket("game_countdown", String.Join($"Hide time ends in {countdown}!", args), Color.yellow, Vector3.forward * 2, true, true, 20)
-            );
+                    new DisplayTextPacket("game_countdown", $"Hide time ends in {countdown}!", Color.yellow, Vector3.forward * 2, true, true, 20)
+                );
             }
 
             // Notify players that the game has started
             ModManager.serverInstance.netamiteServer.SendToAll(
-                new DisplayTextPacket("say", String.Join("Hide and Seek game started!", args), Color.yellow, Vector3.forward * 2, true, true, 20)
+                new DisplayTextPacket("say", "Hide and Seek game started!", Color.yellow, Vector3.forward * 2, true, true, 20)
             );
         }
 
-
-       
         internal class HideAndSeekConfig : PluginConfig {
-        public int REQUIRED_PLAYER_COUNT = 6;
-        public float hideTime = 30.0f;
+            public int REQUIRED_PLAYER_COUNT = 6;
+            public float hideTime = 30.0f;
         }
-
 
         public override void OnStart() {
             Log.Info(NAME, "Hide and Seek plugin started.");
@@ -57,16 +55,15 @@ namespace HideAndSeekPlugin {
                 players.Add(client);
                 Log.Info(NAME, $"{client.name} joined the game as a hider.");
             } else {
-                message = $"<color=#FFDC00>{client.name} joined the Hide and seek match!\n{REQUIRED_PLAYER_COUNT - ModManager.serverInstance.connectedClients} still required to start.</color>";
+                string message = $"<color=#FFDC00>{client.name} joined the Hide and seek match!\n{REQUIRED_PLAYER_COUNT - ModManager.serverInstance.connectedClients} still required to start.</color>";
                 ModManager.serverInstance.netamiteServer.SendToAll(
-                new DisplayTextPacket("say", String.Join(message, args), Color.yellow, Vector3.forward * 2, true, true, 20)
+                    new DisplayTextPacket("say", message, Color.yellow, Vector3.forward * 2, true, true, 20)
                 );
                 players.Add(client);
+            }
 
-            } else if (ModManager.serverInstance.connectedClients >= REQUIRED_PLAYER_COUNT) {
-                StartGame()
-            );
- 
+            if (ModManager.serverInstance.connectedClients >= REQUIRED_PLAYER_COUNT) {
+                StartGame();
             }
         }
 
@@ -76,15 +73,17 @@ namespace HideAndSeekPlugin {
                 hiders.Remove(player);
                 Log.Info(NAME, $"{player.name} was caught by {damager.name}!");
                 ModManager.serverInstance.netamiteServer.SendToAll(
-                new DisplayTextPacket("say", String.Join($"{player.name} was caught by {damager.name}!", args), Color.yellow, Vector3.forward * 2, true, true, 20)
-                )
+                    new DisplayTextPacket("say", $"{player.name} was caught by {damager.name}!", Color.yellow, Vector3.forward * 2, true, true, 20)
+                );
 
 
-            if (hiders.Count = 0) {
+
+
+            if (hiders.Count == 0) {
                 ModManager.serverInstance.netamiteServer.SendToAll(
                 new DisplayTextPacket("say", String.Join("all players where caught ending game", args), Color.yellow, Vector3.forward * 2, true, true, 20)
                 )
-                EndGame()
+                EndGame();
 
             }
         }
