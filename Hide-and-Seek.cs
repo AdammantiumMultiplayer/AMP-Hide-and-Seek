@@ -1,5 +1,7 @@
 using AMP;
 using AMP.DedicatedServer;
+using AMP.Server;
+using AMP.Plugin;
 using AMP.Logging;
 using AMP.Network.Data;
 using AMP.Network.Packets.Implementation;
@@ -46,10 +48,13 @@ namespace HideAndSeekPlugin {
 
         public override void OnStart() {
             Log.Info(NAME, "Hide and Seek plugin started.");
+            ServerEvents.onPlayerQuit += OnPlayerQuit;
+            ServerEvents.onPlayerJoin += OnPlayerJoin;
+            ServerEvents.onPlayerDamaged += OnPlayerDamaged;
             HideAndSeekConfig config = (HideAndSeekConfig) GetConfig();
         }
 
-        public override void OnPlayerJoin(ClientData client) {
+        public void OnPlayerJoin(ClientData client) {
             if (!gameRunning) {
                 //hiders.Add(client);
                 players.Add(client);
@@ -67,7 +72,7 @@ namespace HideAndSeekPlugin {
             }
         }
 
-        public override void OnPlayerDamaged(ClientData player, float damage, ClientInformation damager) {
+        public void OnPlayerDamaged(ClientData player, float damage, ClientInformation damager) {
             if (gameRunning && hiders.Contains(player)) {
                 // Player was damaged by another player, so they are caught.
                 hiders.Remove(player);
@@ -88,7 +93,7 @@ namespace HideAndSeekPlugin {
             }
         }
 
-        public override void OnPlayerQuit(ClientData client) {
+        public void OnPlayerQuit(ClientData client) {
             if (gameRunning) {
                 if (client == seeker) {
                     // Handle the case where the seeker quits during the game.!
