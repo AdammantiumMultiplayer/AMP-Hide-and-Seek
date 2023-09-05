@@ -9,7 +9,7 @@ The Hide and Seek Plugin is a game plugin designed for the Adammantium Multiplay
 2. Restart the server to load the plugin.
  
 # Usage 
-You can set the player count needed but if a Minimum of 6 players required to start a game.
+You can set the player count needed but if not a Minimum of 6 players required to start a game.
 Then the game should automatically start
 
 
