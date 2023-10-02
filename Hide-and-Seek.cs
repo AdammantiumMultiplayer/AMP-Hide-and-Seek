@@ -68,9 +68,12 @@ namespace Hide_and_seek
         {
             if (!gameRunning)
             {
-                //hiders.Add(client);
+                hiders.Add(client);
                 players.Add(client);
                 Log.Info(NAME, $"{client.ClientName} joined the game as a hider.");
+                client.SetOthersNametagVisibility(false);
+
+
             }
             else
             {
@@ -81,11 +84,13 @@ namespace Hide_and_seek
                 );
                 Log.Info(NAME, $"{client.ClientName} joined the game ");
                 players.Add(client);
+                client.SetOthersNametagVisibility(false);
             }
 
             if (ModManager.serverInstance.connectedClients >= config.REQUIRED_PLAYER_COUNT)
             {
                 Log.Info(NAME, $"{client.ClientName} joined the game and enaught people did join to start");
+                client.SetOthersNametagVisibility(false);
                 Thread Startgame = new Thread(StartGame);
                 Startgame.Start();
                 players.Add(client);
@@ -142,6 +147,10 @@ namespace Hide_and_seek
                     hiders.Remove(client);
                     players.Remove(client);
                 }
+                else if (gameRunning == false)
+                {
+                    players.Remove(client);
+                }
             }
         }
 
@@ -184,3 +193,4 @@ namespace Hide_and_seek
         }
     }
 }
+
