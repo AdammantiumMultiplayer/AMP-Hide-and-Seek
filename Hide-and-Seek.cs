@@ -5,6 +5,7 @@ using AMP.Events;
 using AMP.Logging;
 using AMP.Network.Data;
 using AMP.Network.Packets.Implementation;
+using Netamite.Network.Packet.Implementations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Hide_and_seek
     {
         public override string NAME => "HideAndSeek";
         public override string AUTHOR => "Flexhd";
-        public override string VERSION => "0.0.1";
+        public override string VERSION => "0.5.0";
 
         private bool gameRunning = false;
         private List<ClientData> hiders = new List<ClientData>();
@@ -66,7 +67,7 @@ namespace Hide_and_seek
 
         public void OnPlayerJoin(ClientData client)
         {
-            if (!gameRunning)
+            if (gameRunning)
             {
                 hiders.Add(client);
                 players.Add(client);
@@ -81,7 +82,9 @@ namespace Hide_and_seek
                 ModManager.serverInstance.netamiteServer.SendToAll(
                     new DisplayTextPacket("say", message, Color.yellow, Vector3.forward * 2, true, true, 20)
 
+
                 );
+                client.ShowText("say", $"Welcome to Hide and Seek \n{config.REQUIRED_PLAYER_COUNT - ModManager.serverInstance.connectedClients} players still required to start.", Color.yellow, 20);
                 Log.Info(NAME, $"{client.ClientName} joined the game ");
                 players.Add(client);
                 client.SetOthersNametagVisibility(false);
@@ -99,8 +102,12 @@ namespace Hide_and_seek
 
         public void OnPlayerDamaged(ClientData player, float damage, ClientData damager)
         {
-            Log.Info(NAME, $"{player.ClientName} was caught by {damager.ClientName}!");
-            if (gameRunning && hiders.Contains(player))
+            if (player == damager)
+            {
+                return;
+            }
+
+            if (gameRunning && hiders.Contains(player) && damager == seeker)
             {
                 // Player was damaged by another player, so they are caught.
                 hiders.Remove(player);
@@ -108,14 +115,15 @@ namespace Hide_and_seek
                 ModManager.serverInstance.netamiteServer.SendToAll(
                     new DisplayTextPacket("say", $"{player.ClientName} was caught by {damager.ClientName}!", Color.yellow, Vector3.forward * 2, true, true, 20)
                 );
+                Log.Info(NAME, $"hiders:{hiders.Count} ");
 
-                if (hiders.Count == 0)
+                if (hiders.Count == 1)
                 {
                     ModManager.serverInstance.netamiteServer.SendToAll(
                     new DisplayTextPacket("say", "All players were caught, ending game.", Color.yellow, Vector3.forward * 2, true, true, 20)
                     );
-                    
-                    EndGame();
+                    Thread EndGame = new Thread(StartGame);
+                    EndGame.Start();
                 }
             }
         }
@@ -135,8 +143,9 @@ namespace Hide_and_seek
                     System.Random random = new System.Random();
                     int randomIndex = random.Next(0, hiders.Count);
                     seeker = hiders[randomIndex];
-                    hiders.RemoveAt(randomIndex);
-                    
+                    hiders.Remove(seeker);
+
+
                     Log.Info(NAME, $"{seeker.ClientName} is the seeker!");
                     ModManager.serverInstance.netamiteServer.SendToAll(
                     new DisplayTextPacket("say", $"{seeker.ClientName} is the new seeker.", Color.yellow, Vector3.forward * 2, true, true, 20)
@@ -156,7 +165,8 @@ namespace Hide_and_seek
 
         public void StartGame()
         {
-            
+            hiders.Clear();
+            Thread.Sleep(5000);
             foreach (var Client in players)
             {
                 hiders.Add(Client);
@@ -165,18 +175,24 @@ namespace Hide_and_seek
             ModManager.serverInstance.netamiteServer.SendToAll(
             new DisplayTextPacket("say", "Seeker will be chosen in 10 seconds prepare", Color.yellow, Vector3.forward * 2, true, true, 20)
             );
+            
             Thread.Sleep(10000);
             // Choose a random seeker from the hiders.
             System.Random random = new System.Random();
             int randomIndex = random.Next(0, hiders.Count);
             seeker = hiders[randomIndex];
-            hiders.RemoveAt(randomIndex);
+            hiders.Remove(seeker);
             Log.Info(NAME, $"{seeker.ClientName} is the seeker!");
+            Log.Info(NAME, $"hiders:{hiders.Count} ");
+
             gameRunning = true;
             ModManager.serverInstance.netamiteServer.SendToAll(
             new DisplayTextPacket("say", $"{seeker.ClientName} Is the seeker. Hide now!", Color.yellow, Vector3.forward * 2, true, true, 20)
             );
+            seeker.SetOthersNametagVisibility(false);
+            seeker.ShowText("say", $"You are the Seeker The Hiders have 50 Seconds to hide", Color.yellow, 20);
             // Start the hide time countdown
+            Thread.Sleep(10000);
             Thread timer = new Thread(HideTimeCountdown);
             timer.Start();
         }
@@ -188,9 +204,11 @@ namespace Hide_and_seek
             hiders.Clear();
             Log.Info(NAME, "Hide and Seek game ended.");
             ModManager.serverInstance.netamiteServer.SendToAll(
-            new DisplayTextPacket("say", "Hide and seek game ended.", Color.yellow, Vector3.forward * 2, true, true, 20)
+            new DisplayTextPacket("say", "Hide and seek game ended.\n Starting new one in 20 seconds", Color.yellow, Vector3.forward * 2, true, true, 20)
             );
+            Thread.Sleep(20000);
+            Thread Startgame = new Thread(StartGame);
+            Startgame.Start();
         }
     }
 }
-
