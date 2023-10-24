@@ -20,7 +20,7 @@ namespace Hide_and_seek
     {
         public override string NAME => "HideAndSeek";
         public override string AUTHOR => "Flexhd";
-        public override string VERSION => "0.5.0";
+        public override string VERSION => "0.5.1";
 
         private bool gameRunning = false;
         private bool gameStarted = false;
