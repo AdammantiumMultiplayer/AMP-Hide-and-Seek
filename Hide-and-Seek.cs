@@ -20,14 +20,12 @@ namespace Hide_and_seek
     {
         public override string NAME => "HideAndSeek";
         public override string AUTHOR => "Flexhd";
-        public override string VERSION => "0.5.1";
+        public override string VERSION => "0.5.2";
 
         private bool gameRunning = false;
         private bool gameStarted = false;
         private List<ClientData> hiders = new List<ClientData>();
-        private ClientData seeker = null;
-        private float hideTime = 30.0f;
-        private float seekTime = 300.0f;// Hide time in seconds 
+        private ClientData seeker = null;// Hide time in seconds 
         HideAndSeekConfig config;
 
         private CancellationTokenSource cancellationTokenSource;
@@ -138,8 +136,7 @@ namespace Hide_and_seek
             ServerEvents.onPlayerDamaged += OnPlayerDamaged;
             config = (HideAndSeekConfig)GetConfig();
 
-            hideTime = config.hideTime;
-            seekTime = config.seekTime;
+
         }
 
         public void OnPlayerJoin(ClientData client)
@@ -262,11 +259,10 @@ namespace Hide_and_seek
             new DisplayTextPacket("say", $"{seeker.ClientName} Is the seeker. Hide now!", Color.yellow, Vector3.forward * 2, true, true, 20)
             );
             seeker.SetOthersNametagVisibility(false);
-            seeker.ShowText("say", $"You are the Seeker \n The Hiders have {hideTime + 20} Seconds to hide", Color.yellow, 20);
+            seeker.ShowText("say", $"You are the Seeker \n The Hiders have {config.hideTime + 20} Seconds to hide", Color.yellow, 20);
             // Start the hide time countdown
             Thread.Sleep(10000);
             ResetCancellationToken();
-            seekTime = 120.0f;
             Thread timer = new Thread(HideTimeCountdown);
             timer.Start();
         }
@@ -292,4 +288,5 @@ namespace Hide_and_seek
         }
     }
 }
+
 
